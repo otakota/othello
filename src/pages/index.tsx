@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './index.module.css';
+import { DynamicServerError } from 'next/dist/client/components/hooks-server-context';
 
 const Home = () => {
   const [turnColor, setTurnColor] = useState(1);
@@ -16,27 +17,37 @@ const Home = () => {
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     const newBoard = structuredClone(board);
-    newBoard[y][x] = turnColor;
     const directions = [
       [-1, -1],
-      [-1, 0],
-      [-1, 1],
       [0, 1],
       [1, 1],
       [1, 0],
       [1, -1],
       [0, -1],
+      [-1, -1],
+      [-1, 0],
     ];
     if (board[y][x] === 0) {
-      //置いてあるところに置けない
       for (const direction of directions) {
-        if (board[y + direction[0]] !== undefined) {
-          for (let i = 0; i < 8; i++) {
-            //場外に置けない
-            if (board[y + direction[0]][x + direction[1]] === 2 / turnColor) {
-              // 8方向の7マス先までを順に探索してどこかに違う色がある
-              setBoard(newBoard);
-              setTurnColor(2 / turnColor);
+        for (let i = 1; i < 8; i++) {
+          if (newBoard[y + direction[0] * i] === undefined) {
+            break;
+          } else {
+            if (newBoard[y + direction[0] * i][x + direction[1] * i] === undefined) {
+              break;
+            } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === 0) {
+              break;
+            } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === turnColor) {
+              if (i > 1) {
+                for (let back = i; back >= 0; back--) {
+                  newBoard[y + direction[0] * back][x + direction[1] * back] = turnColor;
+                }
+                setBoard(newBoard);
+                setTurnColor(2 / turnColor);
+              }
+              break;
+            } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === 2 / turnColor) {
+              continue;
             }
           }
         }
