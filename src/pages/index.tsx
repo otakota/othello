@@ -17,13 +17,33 @@ const Home = () => {
     console.log(x, y);
     const newBoard = structuredClone(board);
     newBoard[y][x] = turnColor;
-    setBoard(newBoard);
-    if (turnColor === 1) {
-      setTurnColor(2);
-    } else {
-      setTurnColor(1);
+    const directions = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [1, -1],
+      [0, -1],
+    ];
+    if (board[y][x] === 0) {
+      //置いてあるところに置けない
+      for (const direction of directions) {
+        if (board[y + direction[0]] !== undefined) {
+          for (let i = 0; i < 8; i++) {
+            //場外に置けない
+            if (board[y + direction[0]][x + direction[1]] === 2 / turnColor) {
+              // 8方向の7マス先までを順に探索してどこかに違う色がある
+              setBoard(newBoard);
+              setTurnColor(2 / turnColor);
+            }
+          }
+        }
+      }
     }
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.boardStyle}>
