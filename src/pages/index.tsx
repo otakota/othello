@@ -19,13 +19,13 @@ const Home = () => {
     const newBoard = structuredClone(board);
     const directions = [
       [-1, -1],
+      [-1, 0],
+      [-1, 1],
       [0, 1],
       [1, 1],
       [1, 0],
       [1, -1],
       [0, -1],
-      [-1, -1],
-      [-1, 0],
     ];
     if (board[y][x] === 0) {
       for (const direction of directions) {
