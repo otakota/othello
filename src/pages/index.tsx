@@ -16,7 +16,7 @@ const Home = () => {
   ]);
 
   const counter = (num: number) => {
-    return board.flat().filter((n) => n === num);
+    return board.flat().filter((n) => n === num).length;
   };
 
   const clickHandler = (x: number, y: number) => {
