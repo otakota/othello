@@ -14,6 +14,11 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+
+  const counter = (num: number) => {
+    return board.flat().filter((n) => n === num);
+  };
+
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     const newBoard = structuredClone(board);
@@ -57,6 +62,15 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
+      <div className={styles.turnText}>
+        <p>{turnColor === 1 ? '黒' : '白'}の番です</p>
+      </div>
+
+      <div className={styles.counter}>
+        <p>
+          黒{counter(1)} ： {counter(2)}白
+        </p>
+      </div>
       <div className={styles.boardStyle}>
         {board.map((row, y) =>
           row.map((color, x) => (

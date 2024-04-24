@@ -25,6 +25,14 @@
   border: 1px solid black;
 }
 
+.turnText {
+  font-size: 30px;
+}
+
+.stoneText {
+  font-size: 20px;
+}
+
 .stoneStyle {
   display: flex;
   width: 60px;
