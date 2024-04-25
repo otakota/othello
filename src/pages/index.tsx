@@ -14,7 +14,11 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
-
+  const numberColor = {
+    black:1,white:2,gray:3
+  } as const;
+  type numberColor = (typeof numberColor)[keyof typeof numberColor];
+  const
   const counter = (num: number) => {
     return board.flat().filter((n) => n === num).length;
   };
@@ -32,7 +36,7 @@ const Home = () => {
       [1, -1],
       [0, -1],
     ];
-    if (board[y][x] === 0) {
+    if (board[y][x] === 3) {
       for (const direction of directions) {
         for (let i = 1; i < 8; i++) {
           if (newBoard[y + direction[0] * i] === undefined) {
@@ -40,7 +44,7 @@ const Home = () => {
           } else {
             if (newBoard[y + direction[0] * i][x + direction[1] * i] === undefined) {
               break;
-            } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === 0) {
+            } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === 3) {
               break;
             } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === turnColor) {
               if (i > 1) {
@@ -62,15 +66,15 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.turnText}>
-        <p>{turnColor === 1 ? '黒' : '白'}の番です</p>
-      </div>
-
       <div className={styles.counter}>
         <p>
           黒{counter(1)} ： {counter(2)}白
         </p>
       </div>
+      <div className={styles.turnText}>
+        <p>{turnColor === 1 ? '黒' : '白'}の番です</p>
+      </div>
+
       <div className={styles.boardStyle}>
         {board.map((row, y) =>
           row.map((color, x) => (
