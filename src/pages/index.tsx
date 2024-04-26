@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styles from './index.module.css';
-import { DynamicServerError } from 'next/dist/client/components/hooks-server-context';
 
 const Home = () => {
   const [turnColor, setTurnColor] = useState(1);
@@ -14,29 +13,54 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
-  const numberColor = {
-    black:1,white:2,gray:3
-  } as const;
-  type numberColor = (typeof numberColor)[keyof typeof numberColor];
-  const
   const counter = (num: number) => {
     return board.flat().filter((n) => n === num).length;
   };
 
+  const directions = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, 1],
+    [1, 1],
+    [1, 0],
+    [1, -1],
+    [0, -1],
+  ];
+
+  const candidateBoard = structuredClone(board);
+  const candidate = (x: number, y: number) => {
+    if (candidateBoard[y][x] === 0) {
+      for (const direction of directions) {
+        for (let i = 1; i < 8; i++) {
+          if (candidateBoard[y + direction[0] * i] === undefined) {
+            break;
+          } else {
+            if (candidateBoard[y + direction[0] * i][x + direction[1] * i] === undefined) {
+              break;
+            } else if (candidateBoard[y + direction[0] * i][x + direction[1] * i] === 0) {
+              break;
+            } else if (candidateBoard[y + direction[0] * i][x + direction[1] * i] === turnColor) {
+              candidateBoard[y][x] = 3;
+              continue;
+            }
+          }
+        }
+      }
+    }
+  };
+
+  for (let x = 0; x < 8; x++) {
+    for (let y = 0; y < 7; y++) {
+      candidate(x, y);
+    }
+  }
+
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     const newBoard = structuredClone(board);
-    const directions = [
-      [-1, -1],
-      [-1, 0],
-      [-1, 1],
-      [0, 1],
-      [1, 1],
-      [1, 0],
-      [1, -1],
-      [0, -1],
-    ];
-    if (board[y][x] === 3) {
+
+    if (board[y][x] === 0) {
       for (const direction of directions) {
         for (let i = 1; i < 8; i++) {
           if (newBoard[y + direction[0] * i] === undefined) {
@@ -44,7 +68,7 @@ const Home = () => {
           } else {
             if (newBoard[y + direction[0] * i][x + direction[1] * i] === undefined) {
               break;
-            } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === 3) {
+            } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === 0) {
               break;
             } else if (newBoard[y + direction[0] * i][x + direction[1] * i] === turnColor) {
               if (i > 1) {
@@ -63,7 +87,6 @@ const Home = () => {
       }
     }
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.counter}>
@@ -76,13 +99,15 @@ const Home = () => {
       </div>
 
       <div className={styles.boardStyle}>
-        {board.map((row, y) =>
+        {candidateBoard.map((row, y) =>
           row.map((color, x) => (
             <div className={styles.cellStyle} key={`${x}-${y}`} onClick={() => clickHandler(x, y)}>
               {color !== 0 && (
                 <div
                   className={styles.stoneStyle}
-                  style={{ background: color === 1 ? 'black' : 'white' }}
+                  style={{
+                    background: color === 1 ? 'black' : color === 2 ? 'white' : 'darkgray',
+                  }}
                 />
               )}
             </div>
