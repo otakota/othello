@@ -40,10 +40,16 @@ const Home = () => {
               break;
             } else if (candidateBoard[y + direction[0] * i][x + direction[1] * i] === 0) {
               break;
-            } else if (candidateBoard[y + direction[0] * i][x + direction[1] * i] === turnColor) {
+            } else if (
+              candidateBoard[y + direction[0] * i][x + direction[1] * i] ===
+              2 / turnColor
+            ) {
+              if (i > 1) {
+                break;
+              }
               candidateBoard[y][x] = 3;
-              continue;
             }
+            continue;
           }
         }
       }
