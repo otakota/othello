@@ -13,6 +13,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+  const [passCount, setPassCount] = useState(0);
   const counter = (num: number) => {
     return board.flat().filter((n) => n === num).length;
   };
@@ -60,7 +61,13 @@ const Home = () => {
   }
   if (candidateBoard.flat().filter((n) => n === 3).length === 0) {
     setTurnColor(2 / turnColor);
+    setPassCount(passCount + 1);
   }
+  if (passCount === 2) {
+    alert('GG');
+    window.location.reload();
+  }
+
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     const newBoard = structuredClone(board);
@@ -80,6 +87,7 @@ const Home = () => {
                 for (let back = i; back >= 0; back--) {
                   newBoard[y + direction[0] * back][x + direction[1] * back] = turnColor;
                 }
+                setPassCount(0);
                 setBoard(newBoard);
                 setTurnColor(2 / turnColor);
               }
